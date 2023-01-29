@@ -322,10 +322,21 @@ Class lc_strengthened (R : relation) := {
   lc0 : forall a b, R a b -> lc_tm a /\ lc_tm b;
 }.
 
+
+#[local]
+Instance lc_sym_trans_closure_strengthened {R} `{lc R} : lc_strengthened (sym_trans_closure R).
+Proof.
+  constructor. intros. induction H0; inversion H; eauto.
+  - split; apply IHsym_trans_closure; eauto.
+  - split.
+    + apply IHsym_trans_closure1; eauto.
+    + apply IHsym_trans_closure2; eauto.
+Qed.
+
 (** *** Exercise [lc_sym_trans_closure] *)
 #[local]
 Instance lc_sym_trans_closure {R} `{lc R} : lc (sym_trans_closure R).
-Proof. (* TODO *) Admitted.
+Proof. constructor; apply lc_sym_trans_closure_strengthened. Qed.
 
 #[local]
 Instance closure_sym_trans_closure {R} : closure R (sym_trans_closure R).
@@ -359,7 +370,26 @@ Qed.
 #[local]
 Instance compatible_sym_trans_closure {R} {CR: compatible R} : compatible (sym_trans_closure R).
 Proof.
-  (* FILL IN HERE *) Admitted.
+ split; intros; inversion CR; subst.
+ - dependent induction H0.
+   + apply st_rel. inversion CR; subst. spec x. apply compatible_abs0; eauto.
+   + apply st_sym. apply IHsym_trans_closure with (x := x); eauto.
+   + apply st_trans with (t2 := abs (close x t2)).
+      * eapply IHsym_trans_closure1 with (x := x); eauto; autorewrite with lngen; auto.
+      * eapply IHsym_trans_closure2 with (x := x); eauto; autorewrite with lngen; auto.
+ - dependent induction H.
+   + apply st_rel. apply compatible_app3; auto.
+   + apply st_sym. apply IHsym_trans_closure; eauto.
+   + apply st_trans with (t2 := app t2 u).
+      * eapply IHsym_trans_closure1; eauto.
+      * eapply IHsym_trans_closure2; eauto.
+ - dependent induction H0.
+   + apply st_rel. apply compatible_app4; eauto.
+   + apply st_sym. apply IHsym_trans_closure; eauto.
+   + apply st_trans with (t2 := app t t2).
+      * eapply IHsym_trans_closure1; eauto.
+      * eapply IHsym_trans_closure2; eauto.
+Qed.
 
 (* ================================================================= *)
 
