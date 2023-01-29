@@ -236,7 +236,13 @@ Proof. constructor. intros; eauto using cc_rel. Qed.
 #[local]
 Instance subst1_compatible_closure R { SR : substitutive R } : substitutive (compatible_closure R).
 Proof. 
-(* FILL IN HERE *) Admitted.
+  constructor. destruct SR. unfold subst1 in *. intros. induction H0; auto.
+  - apply cc_abs with (L := L \u {{x}}). intros.
+    rewrite subst_tm_open_tm_wrt_tm_var; eauto with lngen.
+    rewrite subst_tm_open_tm_wrt_tm_var; eauto with lngen.
+  - apply cc_app1; eauto with lngen.
+  - apply cc_app2; eauto with lngen.
+Qed.
 
 (** Due to the use of co-finite quantification in our definition of
     compatible_closure (in the Ott file), we need the underlying relation to
