@@ -266,7 +266,11 @@ Qed.
 
 #[local]
 Instance lc_refl_trans_closure {R} `{lc R} : lc (refl_trans_closure R).
-Proof. (* FILL IN HERE *) Admitted.
+Proof.
+  split; intros; induction H0; eauto.
+  - inversion H. eapply lc1. apply H0.
+  - inversion H. eapply lc2. apply H0.
+Qed.
 
 #[local]
 Instance closure_refl_trans_closure {R} : closure R (refl_trans_closure R).
@@ -314,10 +318,14 @@ Qed.
 (** ** Properties of sym_trans_closure: it preserves local closure,
 substitutivity and compatibility *)
 
+Class lc_strengthened (R : relation) := {
+  lc0 : forall a b, R a b -> lc_tm a /\ lc_tm b;
+}.
+
 (** *** Exercise [lc_sym_trans_closure] *)
 #[local]
 Instance lc_sym_trans_closure {R} `{lc R} : lc (sym_trans_closure R).
-Proof.  (* FILL IN HERE *) Admitted.
+Proof. (* TODO *) Admitted.
 
 #[local]
 Instance closure_sym_trans_closure {R} : closure R (sym_trans_closure R).
