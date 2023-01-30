@@ -653,7 +653,7 @@ Proof.
     rewrite_subst_open_hyp.
   - (* app *)
     eauto.
-Qed.  
+Qed.
 
 #[local]
 Instance compatible_parallel : compatible parallel.
@@ -834,7 +834,28 @@ Qed.
 (** *** Exercise [parallel_sub_beta_reduction] *)
 
 Lemma parallel_sub_beta_reduction : parallel [<=] beta_reduction.
-Proof. (* FILL IN HERE *) Admitted.
+Proof.
+  intros. induction H; unfold beta_reduction in *; unfold R_reduction in *.
+  - eapply rt_trans.
+    + eapply compatible_app.
+      * apply IHparallel1.
+      * apply IHparallel2.
+    + eapply rt_rel. eapply cc_rel. eapply beta_reduct.
+      * eapply lc2. apply H.
+      * eapply lc2. apply H0.
+  - eapply rt_refl. auto.
+  - eapply rt_trans.
+    + pick fresh x. spec x. apply compatible_abs with (x := x); auto.
+    + apply rt_refl. pick fresh x. spec x. apply lc_abs_exists with (x1 := x).
+      eapply lc2. apply H.
+  - eapply rt_trans.
+    + eapply compatible_app.
+      * apply IHparallel1.
+      * apply IHparallel2.
+    + apply rt_refl. apply lc_app; eapply lc2.
+      * apply H.
+      * apply H0.
+Qed.
 
 Lemma beta_reduction_trans_refl_cc : beta_reduction [=] trans_closure (refl_closure (compatible_closure beta)).
 Proof.
