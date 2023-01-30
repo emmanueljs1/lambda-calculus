@@ -554,7 +554,14 @@ Qed.
 
 #[local]
 Instance subst1_beta : substitutive beta.
-Proof. (* FILL IN HERE *) Admitted.
+Proof.
+  constructor. unfold subst1. intros. inversion H0. subst. simpl.
+  rewrite subst_tm_open_tm_wrt_tm; eauto. apply beta_reduct.
+  - pick fresh x1. apply lc_abs_exists with (x1 := x1). 
+    rewrite subst_tm_open_tm_wrt_tm_var; eauto.
+    inversion H1; subst. apply subst_tm_lc_tm; auto.
+  - apply subst_tm_lc_tm; auto.
+  Qed.
 
 #[local]
 Instance lc_beta : lc beta.
@@ -596,8 +603,10 @@ Proof.
   intros DR.
   unfold diamond_property in *.
   intros t t1 t2 TC1.
-  move: t2.
-  (* FILL IN HERE *) Admitted.
+  move: t2. induction TC1.
+  - intros t2 TC2. destruct (DR t u t2) as [t3 [H1 H2]]; auto.
+    + move: H. move: u. induction TC2; intros; auto. 
+Admitted.
 
 (* ================================================================= *)
 
